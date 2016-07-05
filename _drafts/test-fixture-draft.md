@@ -46,7 +46,7 @@ public class ReservationsController : ApiController
 	}
 }
 ```
-Для того, чтобы протестировать метод Delete, нам придётся передать в ReservationsController обе его зависимости: IReservationsRepository и IConfiguration. При этом, вторая использоваться не будет.
+Для того, чтобы протестировать метод Delete, нам придeтся передать в ReservationsController обе его зависимости: IReservationsRepository и IConfiguration. При этом, вторая использоваться не будет.
 
 [sut-ploeh]: https://blogs.msdn.microsoft.com/ploeh/2008/10/06/naming-sut-test-variables/
 [explicit-dependencies-principle]: http://deviq.com/explicit-dependencies-principle/
