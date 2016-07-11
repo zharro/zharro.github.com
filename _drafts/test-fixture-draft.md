@@ -186,4 +186,3 @@ internal class PurchaseLogicFixture
 [explicit-dependencies-principle]: http://deviq.com/explicit-dependencies-principle/
 [sut-double-ploeh]: http://blog.ploeh.dk/2016/06/15/sut-double/
 [patters-book]: https://www.ozon.ru/context/detail/id/31789305/
-[about-development-testing]: http://sergeyteplyakov.blogspot.ru/2014/04/about-development-testing.html
