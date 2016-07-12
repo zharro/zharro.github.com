@@ -1,4 +1,7 @@
-Одной из самых больших сложностей, с который я сталкиваюсь при написании unit-тестов является инициализация тестируемого объекта ([sut][sut-ploeh]). Часто этот код усложняет тест и делает его более хрупким. Конечно, мы знаем [принцип явных зависимостей][explicit-dependencies-principle] и тестируемый класс всегда принимает зависимости через конструктор. Давайте рассмотрим пример:
+## Что случилось?
+Стало понятно, что писать и поддерживать unit-тесты для классов с большим количеством зависимостей очень сложно.
+## Это почему? Дайте пример.
+В качестве примера рассмотрим сервис, который возвращает набор продуктов, перед этим применяя скидку к каждому из них. Зависимости будем внедрять через конструктор, как учит [принцип явных зависимостей][explicit-dependencies-principle].
 ```csharp
 public interface IGoodsProvider
 {
@@ -56,9 +59,8 @@ public class PurchaseLogic
     }
 }
 ```
-У класса *PurchaseLogic* есть две зависимости: *IGoodsProvider* для получения списка товаров и *IConfiguration* для получения размера скидки. 
-## Наивный подход к написанию юнит-тестов
-Написать тест для метода *GetGoods* довольно просто. Для этого достаточно замокировать *IGoodsProvider* и *IConfiguration* так, чтобы они возвращали продукт с определенной ценой и некоторый размер скидки соответственно. А после этого убедиться, что скидка была применена правильно. Решение "в лоб" будет выглядеть так:
+## Ну и чего сложного? Берешь и пишешь тест.
+Действительно, написать тест "в лоб" для для метода *GetGoods* довольно просто. Для этого достаточно создать такие "фейковые" реализации *IGoodsProvider* и *IConfiguration*, чтобы они возвращали продукт с определенной ценой и некоторый размер скидки соответственно. А после этого убедиться, что скидка была применена правильно:
 ```csharp
 [Test]
 public void GetGoods_WhenGoodProvidedAndDiscountConfiguredToBeGreaterThenZero_AppliesDiscount()
@@ -83,10 +85,9 @@ public void GetGoods_WhenGoodProvidedAndDiscountConfiguredToBeGreaterThenZero_Ap
 }
 ```
 У этого тестового метода есть несколько проблем:
-1. Для простого класса с двумя зависимостями и простым поведением количество вспомогательного кода кажется весьма значительным. В реальном мире код будет сложнее и читабельность тестов будет еще ниже. 
-2. Каждый тестовый метод должен передать в конструктор *sut* все зависимости, не смотря на то, используются они в тестируемом методе или нет. Например, если бы в классе *PurchaseLogic* появился метод *CancelPurchase*, который использовал только зависимость *IGoodsProvider* - в тесте все равно пришлось бы иметь дело с *IConfiguration*.
-3. Количество зависимостей у класса *PurchaseLogic* может измениться и в этом случае нам придётся изменять код **всех** тестов.
-## Использование метода инициализации теста
+1. Каждый тестовый метод должен передать в конструктор *sut* все зависимости, не смотря на то, используются они в тестируемом методе или нет.
+2. Количество зависимостей у класса *PurchaseLogic* может измениться и в этом случае нам придётся изменять код **всех** тестов.
+## Ну ладно, тогда можно создавать sut в методе SetUp
 Большинство тестовых фреймворков предоставляют возможность выполнить код инициализации перед вызовом каждого тестового метода. В NUnit - это метод, помеченный атрибутом *SetUp*:
 ```csharp
 private PurchaseLogic _sut;
@@ -116,17 +117,15 @@ public void GetGoods_WhenGoodProvidedAndDiscountConfiguredToBeGreaterThenZero_Ap
     Assert.That(goodWithDiscount.Price, Is.EqualTo(100 * 0.95));
 }
 ```
-Метод инициализации понижает хрупкость тестов, ведь теперь при изменении конструктора *PurchaseLogic* не придется менять все тесты. Однако, у этого подхода есть и недостатки. Во-первых, этапы Arrange, Act и Assert обычно связаны между собой и при чтении теста возникает "переключение контекста". Во-вторых, создание тестируемого класса вполне может отличаться от теста к тесту, в этом случае следует выделить логику создания тестируемого класса в отдельный фабричный метод.
-## Использование фабричного метода в тестах
-Предположим, что тестам класса *PurchaseLogic* не важно устанавливать размер скидки, но важно настраивать *IGoodsProvider*. Тогда использовать фабричный метод можно так:
+Метод инициализации понижает хрупкость тестов, ведь теперь при изменении конструктора *PurchaseLogic* не придется менять все тесты. Однако, у этого подхода есть и недостатки: 
+1. Этапы Arrange, Act и Assert обычно связаны между собой и при чтении теста возникает "переключение контекста". 
+2. Создание тестируемого класса вполне может отличаться от теста к тесту. В этом случае следует выделить логику создания тестируемого класса в отдельный фабричный метод.
+## Ну уж фабрика точно решит все проблемы?
+Не совсем. Реализуем фабричный метод так, чтобы он принимал все зависимости:
 ```csharp
-public static PurchaseLogic CreatePurchaseLogic(IGoodsProvider goodsProvider)
+public static PurchaseLogic CreatePurchaseLogic(IGoodsProvider goodsProvider, IConfiguration configuration)
 {
-  Mock<IConfiguration> mockedConfiguration = new Mock<IConfiguration>();
-    mockedConfiguration.Setup(p => p.GetDiscountPercent())
-        .Returns(5);
-
-    return new PurchaseLogic(goodsProvider, mockedConfiguration.Object);
+    return new PurchaseLogic(goodsProvider, configuration);
 }
 
 [Test]
@@ -136,7 +135,10 @@ public void GetGoods_WhenGoodProvidedAndDiscountConfiguredToBeGreaterThenZero_Ap
     Mock<IGoodsProvider> mockedGoodsProvider = new Mock<IGoodsProvider>();
     mockedGoodsProvider.Setup(p => p.GetGoods())
         .Returns(new List<Good> { new Good { Price = 100 } });
-    var sut = CreatePurchaseLogic(mockedGoodsProvider.Object);
+    Mock<IConfiguration> mockedConfiguration = new Mock<IConfiguration>();
+    mockedConfiguration.Setup(p => p.GetDiscountPercent())
+        .Returns(5);
+    var sut = CreatePurchaseLogic(mockedGoodsProvider.Object, mockedConfiguration.Object);
 
     // Act
     var goodsWithDiscount = sut.GetGoods();
@@ -147,9 +149,9 @@ public void GetGoods_WhenGoodProvidedAndDiscountConfiguredToBeGreaterThenZero_Ap
     Assert.That(goodWithDiscount.Price, Is.EqualTo(100 * 0.95));
 }
 ```
-Разница кажется небольшой, но теперь вся *нужная* информация для анализа логики теста находится в одном месте. Фабричный метод скрывает детали создания тестируемого класса, предоставляя возможность каждому тесту настроить его под себя. Но только до определенной степени. На моей практике, для классов с большим количеством зависимостей, выделить удачный фабричный метод бывает трудно, поскольку каждому тесту требуется настраивать *sut* по-разному. На днях в книге Сергея Теплякова [Паттерны проектирования на платформе .NET][patters-book], я прочитал про еще один способ: паттерн Test Fixture, который изящно решает эту проблему.
+Теперь вся *нужная* информация для анализа логики теста находится в одном месте. Фабричный метод скрывает детали создания тестируемого класса, предоставляя возможность тестам настроить его под себя. Но только до определенной степени. На моей практике, для классов с большим количеством зависимостей, выделить удачный фабричный метод бывает трудно, поскольку каждому тесту требуется настраивать *sut* совершенно по-разному. Но на днях в книге Сергея Теплякова [Паттерны проектирования на платформе .NET][patters-book], я прочитал про паттерн Test Fixture, который изящно решает эту проблему.
 ## Паттерн Test Fixture
-Паттерн предлагает скрыть все аспекты создания тестового объекта от самих тестов, при этом предоставив им рычаги для максимального контроля. Для этого процесс создания выделяем в отдельный класс, который принято называть с *Fixture* на конце и добавляем в него набор методов With*PropertyName*, позволяющие настроить класс:
+Предлагается скрыть все аспекты создания тестового объекта от самих тестов, при этом предоставив им максимум контроля над этим процессом. Для этого процесс создания тестируемого объекта выделяем в отдельный класс, который принято называть с *Fixture* на конце:
 ```
 internal class PurchaseLogicFixture
 {
@@ -181,8 +183,35 @@ internal class PurchaseLogicFixture
     }
 }
 ```
+Теперь, когда вся подготовительная работа завершена, тесты могут заниматься тем, чем должны: проверять, что функциональность тестируемого кода работает так, как ожидается:
+```
+[Test]
+public void GetGoods_WhenGoodProvidedAndDiscountConfiguredToBeGreaterThenZero_AppliesDiscount()
+{
+    // Arrange
+    Mock<IGoodsProvider> mockedGoodsProvider = new Mock<IGoodsProvider>();
+    mockedGoodsProvider.Setup(p => p.GetGoods())
+        .Returns(new List<Good> { new Good { Price = 100 } });
+    Mock<IConfiguration> mockedConfiguration = new Mock<IConfiguration>();
+    mockedConfiguration.Setup(p => p.GetDiscountPercent())
+        .Returns(5);
+    var sut = new PurchaseLogicFixture()
+        .WithGoodsProvider(mockedGoodsProvider.Object)
+        .WithConfiguration(mockedConfiguration.Object)
+        .PurchaseLogic;
+
+    // Act
+    var goodsWithDiscount = sut.GetGoods();
+
+    // Assert
+    Assert.That(goodsWithDiscount.Count, Is.EqualTo(1));
+    Good goodWithDiscount = goodsWithDiscount.Single();
+    Assert.That(goodWithDiscount.Price, Is.EqualTo(100 * 0.95));
+}
+```
+## Отлично, может, теперь использовать Test Fixture во всех тестах?
+Пожалуй, не стоит. Test Fixture хорошо решает задачу инициализации тестируемого объекта, имеющего много зависимостей, которые нужно настраивать по-разному от теста к тесту. Для более простых случаев вполне подойдет фабричный метод.
 
 [sut-ploeh]: https://blogs.msdn.microsoft.com/ploeh/2008/10/06/naming-sut-test-variables/
 [explicit-dependencies-principle]: http://deviq.com/explicit-dependencies-principle/
-[sut-double-ploeh]: http://blog.ploeh.dk/2016/06/15/sut-double/
 [patters-book]: https://www.ozon.ru/context/detail/id/31789305/
