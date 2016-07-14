@@ -7,7 +7,7 @@ categories: design patterns, unit tests
 Стало понятно, что писать и поддерживать unit-тесты для классов с большим количеством зависимостей очень сложно.
 ## Это почему? Дайте пример!
 В качестве примера рассмотрим сервис, который возвращает набор продуктов, перед этим применяя скидку к каждому из них. Зависимости будем внедрять через конструктор, как учит [принцип явных зависимостей][explicit-dependencies-principle].
-{% highlight %}
+```
 public interface IGoodsProvider
 {
     IList<Good> GetGoods();
@@ -63,10 +63,10 @@ public class PurchaseLogic
         return goods;
     }
 }
-{% endhighlight %}
+```
 ## Ну и чего сложного? Берешь и пишешь тест.
 Действительно, написать тест "в лоб" для для метода *GetGoods* довольно просто. Для этого достаточно создать такие "фейковые" реализации *IGoodsProvider* и *IConfiguration*, чтобы они возвращали продукт с определенной ценой и некоторый размер скидки соответственно. А после этого убедиться, что скидка была применена правильно:
-```csharp
+```
 [Test]
 public void GetGoods_WhenGoodProvidedAndDiscountConfiguredToBeGreaterThenZero_AppliesDiscount()
 {
@@ -94,7 +94,7 @@ public void GetGoods_WhenGoodProvidedAndDiscountConfiguredToBeGreaterThenZero_Ap
 2. Количество зависимостей у класса *PurchaseLogic* может измениться и в этом случае нам придётся изменять код **всех** тестов.
 ## Ну ладно, тогда можно создавать sut в методе SetUp
 Большинство тестовых фреймворков предоставляют возможность выполнить код инициализации перед вызовом каждого тестового метода. В NUnit - это метод, помеченный атрибутом *SetUp*:
-```csharp
+```
 private PurchaseLogic _sut;
 
 [SetUp]
@@ -127,7 +127,7 @@ public void GetGoods_WhenGoodProvidedAndDiscountConfiguredToBeGreaterThenZero_Ap
 2. Создание тестируемого класса вполне может отличаться от теста к тесту. В этом случае следует выделить логику создания тестируемого класса в отдельный фабричный метод.
 ## Ну уж фабрика точно решит все проблемы?
 Не совсем. Реализуем фабричный метод так, чтобы он принимал все зависимости:
-```csharp
+```
 public static PurchaseLogic CreatePurchaseLogic(IGoodsProvider goodsProvider, IConfiguration configuration)
 {
     return new PurchaseLogic(goodsProvider, configuration);
