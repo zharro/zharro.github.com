@@ -19,5 +19,5 @@ github_username:  zharro
 encoding: utf-8
 
 # Build settings
-markdown: kramdown
-highlighter: rouge
+# markdown: kramdown
+# highlighter: rouge
