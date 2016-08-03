@@ -212,7 +212,7 @@ internal class PurchaseLogicFixture
 
 Теперь, когда вся подготовительная работа завершена, тесты могут заниматься тем, чем должны: проверять, что функциональность тестируемого кода работает так, как ожидается:
 
-{% highlight csharp %}
+{% highlight %}
 [Test]
 public void GetGoods_WhenGoodProvidedAndDiscountConfiguredToBeGreaterThenZero_AppliesDiscount()
 {
