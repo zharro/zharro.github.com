@@ -1,8 +1,9 @@
 ---
-layout: post
-title:  "4 способа инициализировать тестируемый класс"
-categories: [design-patterns]
-tags : [design-patterns, unit-tests]
+layout:     post
+title:      Паттерн Test Fixture
+categories: design-patterns unit-testing
+summary:    4 способа инициализировать тестируемый класс
+date:       2016-07-13
 ---
 
 ## Что случилось?
