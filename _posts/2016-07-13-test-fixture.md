@@ -2,7 +2,7 @@
 layout:     post
 title:      Паттерн Test Fixture
 categories: design-patterns unit-testing
-summary:    4 способа инициализировать тестируемый класс
+summary:    и еще 3 (менее удачных) способа инициализировать тестируемый класс
 date:       2016-07-13
 ---
 

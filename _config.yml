@@ -3,7 +3,7 @@ title:       Alex Zharov
 email:       to.alex.zharov@gmail.com
 author:      Alex Zharov
 description: "Thoughts on .NET, *DD & Tech"
-baseurl:     ""
+baseurl:     "http://zharro.github.io"
 url:         "http://pixyll.com"
 date_format: "%b %-d, %Y"
 
