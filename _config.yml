@@ -4,7 +4,7 @@ email:       to.alex.zharov@gmail.com
 author:      Alex Zharov
 description: "Thoughts on .NET, *DD & Tech"
 baseurl:     "http://zharro.github.io"
-url:         "http://pixyll.com"
+url:         "http://zharro.github.io"
 date_format: "%b %-d, %Y"
 
 # Google services
