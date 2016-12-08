@@ -5,6 +5,6 @@ permalink: /about/
 tags: about
 ---
 
-My name is Alexey Zharov, and this is my professional blog. Here, I write about programming, software development, and architecture.
+Меня зовут Жаров Алексей. Я работаю .NET разработчиком в компании [Tyme](http://tyme.ru/). Это мой профессиональный блог, в смысле здесь я пишу о программировании :).
 
-I'm a professional .NET developer living in Moscow, Russia. Follow me on [Twitter](https://twitter.com/zharroo).
+Я в [Twitter](https://twitter.com/zharroo).
