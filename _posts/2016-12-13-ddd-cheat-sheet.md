@@ -16,7 +16,7 @@ date:       2016-12-13
 | Изменяемость | Изменяемый     |    Неизменяемый (иначе жизненный цикл будет не нулевым) |
 | Ответственность | Идентификация и отслеживание жизненного цикла. Всю остальную логику нужно стараться выносить в Value objects   | Любая логика, не изменяющая сам объект |
 | Как хранятся в БД | В отдельных таблицах   | Вкладывается в таблицу entity, которой принадлежит. Если свойств несколько - вкладываются они все. |
-| Пример | http://bit.ly/2hftCK5   | http://bit.ly/2gRgesC |
+| Пример | [Appointment][appointment-cs] | [DateTimeRange][dateTimeRange-cs] |
 
 ## Доменный сервис
 Доменный сервис должен содержать доменную логику ([в отличии от сервиса приложения][domain-services-vs-application-services]), которую нельзя отнести ни к одной из entity или value object. Обычно доменный сервис содержит методы, описывающие сложные сценарии, затрагивающие несколько доменных объектов. То есть, доменный сервис дирижирует другими доменными объектами, а не выполняет оперции сам. В противном случае можно "скатиться" к [транзакционному][transactionScript] программированию и [анемичным моделям][anemicDomainModel].
@@ -32,6 +32,7 @@ date:       2016-12-13
 
 ## ... и у DDD тоже есть слои
 Если наложить основные сущности DDD на [onion architecture][onionArch] - то получим такую [картину][pragmatic-unit-testing]:
+
 ![onionArchitecture-img]
 
 Главное, на что стоит обратить внимание - entities, value objects, domain events и агрегаты находятся в самом центре, а соответственно - не должны иметь внешних зависимостей. Если нам удастся изолировать домен таким образом - то его будет проще понимать и тестировать.
@@ -43,3 +44,5 @@ date:       2016-12-13
 [onionArch]: http://jeffreypalermo.com/blog/the-onion-architecture-part-1/
 [pragmatic-unit-testing]: http://enterprisecraftsmanship.com/2016/06/15/pragmatic-unit-testing/
 [invariant-wiki]: https://en.wikipedia.org/wiki/Invariant_(computer_science)
+[dateTimeRange-cs]: https://gist.github.com/zharro/35ef90a04ee1193310aaa618fc2d582c
+[appointment-cs]: https://gist.github.com/zharro/0050c802832694d02da9e75cb9296a4e
