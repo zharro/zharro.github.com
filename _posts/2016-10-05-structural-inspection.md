@@ -4,6 +4,7 @@ title:      Structural Inspection
 categories: unit-testing
 summary:    имеет ли право на жизнь?
 date:       2016-10-05
+tags:       russian unit-testing
 ---
 
 Люблю осознавать *относительность* рекомендаций по дизайну и паттернам, находя частично или полностью противоречащие друг другу статьи от гуру нашей индустрии. Сегодня поговорим про Structural Inspection.

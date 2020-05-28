@@ -4,6 +4,7 @@ title:      Паттерн Test Fixture
 categories: design-patterns unit-testing
 summary:    и еще 3 (менее удачных) способа инициализировать тестируемый класс
 date:       2016-07-13
+tags:       russian design-patterns unit-testing
 ---
 
 ## Что случилось?

@@ -4,6 +4,7 @@ title:      Шпаргалка по основам DDD
 categories: ddd
 summary:    можно списывать ;)
 date:       2016-12-13
+tags:       russian ddd
 ---
 
 ## Entity & value object
