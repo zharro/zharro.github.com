@@ -22,7 +22,7 @@ title: Alexey Zharov blog
 email: to.alex.zharov@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
   Welcome to my personal blog created to share my experiences and learning in .NET Core,
-  Postgres, SQL Server, software design, CS basics, etc. The main goal I pursue with this blog is to structure
+  Postgres, SQL Server, software design, CS, etc. The main goal I pursue with this blog is to structure
   information in my head but I'd be happy if it helps someone else!
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "http://zharro.github.io" # the base hostname & protocol for your site, e.g. http://example.com

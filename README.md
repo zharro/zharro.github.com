@@ -1,0 +1,1 @@
+This is a repo of my personal blog made with Jekyll and hosted by GitHub Pages: http://zharro.github.io.
