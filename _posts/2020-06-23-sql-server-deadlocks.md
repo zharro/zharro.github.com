@@ -4,7 +4,7 @@ title:      SQL Server Locks и Deadlocks
 categories: what-every-developer-should-know-about-sql-server
 summary:    Рубрика "What every developer should know about SQL Server"
 date:       2020-06-23
-tags:       russian sql
+tags:       russian sql every-developer-should-know
 ---
 
 Locking - это механизм, который SQL Server использует для синхронизации одновременного доступа к данным несколькими клиентами. Как правило, приложения не устанавливают локи явно. Это делает SQL Server Database Engine на основании T-SQL выражений запросов.
@@ -59,3 +59,8 @@ Deadlock victim транзакция откатывается, её клиент
 1. Отловить ошибку с кодом 1205.
 2. Залогировать ее для дальнейшего анализа.
 3. Отправить запрос на повторное исполнение. При этом все равно выбрасывать ошибку случае, когда дэдлок не уходит.
+
+## Ресурсы
+* [Transaction Locking and Row Versioning Guide](https://docs.microsoft.com/en-us/sql/relational-databases/sql-server-transaction-locking-and-row-versioning-guide)
+
+* [SQL Server: Deadlock Analysis and Prevention (Pluralsight course)](https://www.pluralsight.com/courses/sqlserver-deadlocks)
