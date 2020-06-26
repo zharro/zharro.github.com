@@ -30,6 +30,9 @@ twitter_username: zharroo
 github_username:  zharro
 google_analytics: UA-170884870-1
 
+disqus:
+  shortname: zharov-blog
+
 # Build settings
 theme: minima
 plugins:
